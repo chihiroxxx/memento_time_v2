@@ -1,0 +1,13 @@
+/使ってないmysql
+
+/backend/.vscode
+/backend/auth
+/backend/old
+/backend/main_test.go
+/backend/go.mod
+/backend/go.sum
+/backend/public.key
+/backend/secret.key
+/backend/README.md
+
+

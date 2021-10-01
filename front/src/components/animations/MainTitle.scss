@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Acme&display=swap");
+$cBlack: black;
+
+@mixin animation(
+  $name,
+  $duration: 1s,
+  $timing-function: ease,
+  $delay: 0s,
+  $iteration-count: 1,
+  $direction: normal,
+  $fill-mode: forwards
+) {
+  animation: {
+    name: $name;
+    duration: $duration;
+    timing-function: $timing-function;
+    delay: $delay;
+    iteration-count: $iteration-count;
+    direction: $direction;
+    fill-mode: $fill-mode;
+  }
+}
+
+#container {
+  font-family: "Acme", sans-serif;
+  height: 500px;
+  position: relative;
+}
+.animate-title {
+  text-align: center;
+  cursor: default;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  white-space: nowrap;
+  font-weight: bold;
+  font-family: "Acme", sans-serif;
+  &.inview {
+    & .char {
+      font-size: 7em;
+      &.mini {
+        font-size: 4.5em;
+      }
+      display: inline-block;
+      @include animation(
+        $name: kf-animate-chars,
+        $duration: 0.4s,
+        $timing-function: cubic-bezier(0.43, 1.74, 0.5, 0.6),
+        $fill-mode: both,
+        $iteration-count: 1
+      );
+      @for $i from 1 through 22 {
+        &:nth-child(#{$i}) {
+          animation-delay: $i * 0.11s;
+        }
+      }
+    }
+  }
+}
+
+@keyframes kf-animate-chars {
+  0% {
+    opacity: 0;
+    transform: translateY(-150%);
+  }
+  30% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: translateY(20%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .animate-title {
+    &.inview {
+      & .char {
+        font-size: 3.5em;
+        &.mini {
+          font-size: 2.5em;
+        }
+      }
+    }
+  }
+}

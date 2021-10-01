@@ -1,0 +1,11 @@
+container_definitions_api_initialize.json
+container_definitions_api.json
+container_definitions_web.json
+
+
+.terraform.lock.hcl
+.terraform/
+
+terraform.tfstate.backup
+terraform.tfvars
+terraform.tfstate

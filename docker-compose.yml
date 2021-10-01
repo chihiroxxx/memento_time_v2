@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  react:
+    build: ./front
+    container_name: memento_front
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${PWD}/front/src:/usr/src/app/src
+    command: npm run start
+
+  golang:
+    build: ./backend
+    command: go run main.go
+    volumes:
+      - ${PWD}/backend:/go/src/backend
+    ports:
+      - 9090:9090
+    depends_on:
+      - mysql
+    tty: true
+    stdin_open: true
+  mysql:
+    # build: ./mysql
+    # volumes:
+    #   - ./mysql/data:/var/lib/mysql
+    # ports:
+    #   - 3306:3306
+    # platform: linux/x86_64
+    # container_name: memento_mysql
+    # environment:
+    #   MYSQL_USER: golang
+    #   # # MYSQL_ROOT_PASSWORD: password
+    #   MYSQL_ROOT_PASSWORD:
+    #   MYSQL_PASSWORD:
+    #   # MYSQL_PASSWORD: password
+    #   # - MYSQL_USER=root
+    #   # - MYSQL_USER=docker
+    #   # - MYSQL_PASSWORD=password
+    # build: ./mysql
+    # volumes:
+    #   - ./mysql/data:/var/lib/mysql
+    container_name: memento_mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    platform: linux/x86_64
+    image: mysql:5.7
+    volumes:
+      - db-volume:/var/lib/mysql
+    environment:
+      # MYSQL_DATABASE: root
+      # MYSQL_USER: golang
+      # MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+volumes:
+  db-volume:
