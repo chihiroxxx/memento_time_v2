@@ -19,5 +19,4 @@
 - SSL 化済み(http はリダイレクト)
 - 開発環境 Docker(docker-compose.yml)
 - RakutenBookAPI GoogleBookAPI からデータ取得
-- テストコード rspec
 - csv 書き出し
