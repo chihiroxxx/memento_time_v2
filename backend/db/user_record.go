@@ -1,31 +1,15 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-func user_record_init() {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
-
-}
-
 func User_record_delete(u *User) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("don't delete... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `DELETE FROM users WHERE name = ?`
-	_, err = db.Exec(cmd, u.Name)
+	_, err := db.Exec(cmd, u.Name)
 
 	if err != nil {
 		fmt.Println(err)
@@ -34,39 +18,29 @@ func User_record_delete(u *User) error {
 	return nil
 }
 
-func User_record_create(u *User) int {
-
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
+func User_record_create(u *User) (int, error) {
 
 	cmd := `INSERT INTO users (name, password_digest) VALUES (?, ?)`
 	result, err := db.Exec(cmd, u.Name, u.Password_digest)
-
 	if err != nil {
 		fmt.Println(err)
-		return -1
+		return -1, fmt.Errorf("can't create user... %v", err)
 	}
 	fmt.Println("Userのrecord作りました！！！")
 	resultId, _ := result.LastInsertId()
 	fmt.Println(resultId)
 
-	return int(resultId)
+	return int(resultId), nil
 }
 
 func User_record_login(u *User) (int, error) {
 
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
-
 	cmd := `SELECT * FROM users WHERE name = ?`
 
 	rows, err := db.Query(cmd, u.Name)
+	if err != nil {
+		return -1, fmt.Errorf("user record login error %v", err)
+	}
 	defer rows.Close()
 
 	var user User

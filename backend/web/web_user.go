@@ -31,8 +31,8 @@ func UserCreate(c echo.Context) error {
 
 	u := newUserRecord(c)
 	fmt.Println(&u)
-	resultId := db.User_record_create(u)
-	if resultId == -1 {
+	resultId, err := db.User_record_create(u)
+	if resultId == -1 || err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "can't create...")
 	}
 	token, err := getAuth(u, resultId)

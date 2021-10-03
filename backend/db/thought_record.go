@@ -1,23 +1,16 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"sort"
 )
 
 func Thought_record_create(t *Thoughts) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("can't create... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `INSERT INTO thoughts
 					(idea, page, reading_time, date, book_id)
 					VALUES (?, ?, ?, ?, ?)`
-	_, err = db.Exec(cmd, t.Idea, t.Page, t.Reading_time, t.Date, t.Book_id)
+	_, err := db.Exec(cmd, t.Idea, t.Page, t.Reading_time, t.Date, t.Book_id)
 
 	if err != nil {
 		fmt.Println(err)
@@ -28,12 +21,6 @@ func Thought_record_create(t *Thoughts) error {
 }
 
 func Thought_record_index(userid string) ([]JoinedThoughtRecord, error) {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return nil, fmt.Errorf("can't mysql open... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `SELECT thoughts.id, thoughts.idea, thoughts.page, thoughts.reading_time, thoughts.date, books.booktitle ,
 	 					books.author, books.bookimage, books.created_at,books.updated_at, books.id ,books.user_id
@@ -87,16 +74,11 @@ type JoinedThoughtRecord struct {
 }
 
 func Thought_record_delete(id string) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("can't delete... %v", err)
-	}
-	defer db.Close()
+
 	fmt.Println("idは", id)
 
 	cmd := `DELETE FROM thoughts WHERE id = ?`
-	_, err = db.Exec(cmd, id)
+	_, err := db.Exec(cmd, id)
 	if err != nil {
 		fmt.Println(err)
 		return fmt.Errorf("can't delete... %v", err)
@@ -105,16 +87,10 @@ func Thought_record_delete(id string) error {
 }
 
 func Thought_record_update(t *Thoughts) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("can't mysql open... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `UPDATE thoughts SET idea = ? WHERE id = ?`
 
-	_, err = db.Exec(cmd, t.Idea, t.Id)
+	_, err := db.Exec(cmd, t.Idea, t.Id)
 
 	if err != nil {
 		fmt.Println(err)

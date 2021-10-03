@@ -1,24 +1,17 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 )
 
 func Book_record_exist_checker(b *Book) (int, error) {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return -1, fmt.Errorf("can't mysql open ... %v", err)
-	}
-	defer db.Close()
 
 	if b.Booktitle == "" {
-		fmt.Println(err)
-		return -1, fmt.Errorf("can't search blanc title... %v", err)
+
+		return -1, fmt.Errorf("can't search blanc title")
 	}
 
-	cmd := `SELECT * FROM books WHERE booktitle = ? COLLATE utf8mb4_general_ci AND user_id = ?`
+	cmd := `SELECT * FROM books WHERE booktitle = ? AND user_id = ?`
 	rows, err := db.Query(cmd, b.Booktitle, b.User_id)
 	if err != nil {
 		fmt.Println(err)
@@ -55,12 +48,6 @@ func Book_record_exist_checker(b *Book) (int, error) {
 }
 
 func Book_record_create(b *Book) (int, error) {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return -1, fmt.Errorf("can't mysql open... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `INSERT INTO books
 					(booktitle, author, bookimage,
@@ -91,15 +78,8 @@ func Book_record_create(b *Book) (int, error) {
 }
 
 func Book_record_finish_count_up(id string) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("can't open mysql %v", err)
-	}
-	defer db.Close()
-
 	cmd := `INSERT INTO finishes (count, book_id) SELECT (SELECT MAX(count) FROM finishes WHERE book_id = ?) + 1, ?;`
-	_, err = db.Exec(cmd, id, id)
+	_, err := db.Exec(cmd, id, id)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -107,21 +87,6 @@ func Book_record_finish_count_up(id string) error {
 }
 
 func Book_record_index(id string) ([]Book, error) {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return nil, fmt.Errorf("can't open mysql %v", err)
-	}
-	defer db.Close()
-
-	fmt.Println("indexのidは" + id)
-	if id == "" {
-		fmt.Println(err)
-		return nil, fmt.Errorf("can't get any id... %v", err)
-	} else if id == "-1" {
-		fmt.Println(err)
-		return nil, fmt.Errorf("can't get -1 id... %v", err)
-	}
 
 	cmd := `SELECT
 									booksA.id, booksA.booktitle,

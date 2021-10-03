@@ -1,21 +1,14 @@
 package db
 
 import (
-	"database/sql"
 	"fmt"
 	"sort"
 )
 
 func Finish_record_first_create(id int) error {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return fmt.Errorf("can't mysql open... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `INSERT INTO finishes (count, book_id) VALUES (?, ?)`
-	_, err = db.Exec(cmd, 0, id)
+	_, err := db.Exec(cmd, 0, id)
 	if err != nil {
 		fmt.Println(err)
 		return fmt.Errorf("can't create finishrecord... %v", err)
@@ -24,12 +17,6 @@ func Finish_record_first_create(id int) error {
 }
 
 func Finish_record_index(userid string) ([]JoinedFinishRecord, error) {
-	db, err := sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
-	if err != nil {
-		fmt.Println(err)
-		return nil, fmt.Errorf("can't mysql open... %v", err)
-	}
-	defer db.Close()
 
 	cmd := `SELECT finishes.id, finishes.count, finishes.finish_date,
 								finishes.created_at, finishes.updated_at ,

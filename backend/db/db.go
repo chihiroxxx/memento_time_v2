@@ -7,10 +7,25 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func Db_main() {
+var (
+	db     *sql.DB
+	dbname = "test_go_test10"
+)
 
+func init() {
 	db_create()
 
+	var err error
+	db, err = sql.Open(SQL_DRIVER, SQL_CONFIG+dbname)
+	if err != nil {
+		fmt.Println(err)
+
+	}
+	fmt.Println("initテスト！！！initされてる？？")
+
+}
+
+func Db_main() {
 	fmt.Println(sql.Drivers())
 }
 
@@ -55,10 +70,6 @@ type Finish struct {
 	Updated_at  string `json:"updatedat"`
 	Book_id     int    `json:"bookid"`
 }
-
-var db *sql.DB
-
-var dbname = "test_go_test11"
 
 const SQL_DRIVER string = "mysql"
 
